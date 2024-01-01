@@ -1,0 +1,14 @@
+.todoHeader {
+    background-color: var(--base-color);
+}
+
+.userIcon{
+    background-image: url("/resources/image/User.svg");
+    width: 40px;
+    height: 40px;
+}
+
+.todolist-resizer .x-panelresizer {
+    border-right: 1px solid var(--border-line-color);
+    border-left: 1px solid var(--border-line-color);
+}

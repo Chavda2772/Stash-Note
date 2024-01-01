@@ -1,0 +1,25 @@
+$dataview-item-color: black;
+
+.add-todo-button {
+    background-color: var(--base-color);
+    color: white;
+}
+
+.todoList-header {
+    background-color: var(--toolbar-header-color);
+    padding: 0px 10px;
+    min-height: 40px;
+    border-bottom: 1px solid var(--base-color);
+}
+
+.x-treecell .x-expander-el,
+.x-menuitem .x-icon-el,
+.x-treecell .x-icon-el,
+.x-treecell.x-treecell-checkable.x-treecell-unchecked .x-check-el,
+.list-icon-color {
+    color: var(--base-color);
+}
+
+.menu-padding {
+    padding: 5px !important;
+}

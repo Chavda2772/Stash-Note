@@ -1,0 +1,10 @@
+﻿.vs/
+
+/Backend/node_modules
+/Backend/Logs
+/Backend/.env
+/Backend/package-lock.json
+
+/Frontend/build
+/Frontend/bootstrap.json
+/Frontend/bootstrap.jsonp

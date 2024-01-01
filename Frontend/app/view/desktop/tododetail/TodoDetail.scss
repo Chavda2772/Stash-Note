@@ -1,0 +1,50 @@
+.detailsHeader {
+    background-color: var(--toolbar-header-color);
+}
+
+.detailsHeader .x-body-el {
+    color: black;
+}
+
+.detailsHeader {
+    color: var(--base-color);
+}
+
+.fa-pencil-alt.edit {
+    color: var(--base-color);
+}
+
+.fa-ban.cancel {
+    color: var(--base-color);
+}
+
+.add-todo-button {
+    background-color: var(--base-color);
+    color: white;
+}
+
+.edit-button {
+    background-color: var(--base-color);
+    color: white;
+}
+
+.edit-button .x-inner-el .x-body-el .x-icon-el {
+    color: white;
+}
+
+
+.tox-statusbar__branding {
+    display: none;
+}
+
+.todo-details-action-toolbar {
+    background-color: var(--toolbar-header-color);
+    padding: 0px 10px;
+    min-height: 40px;
+    border-bottom: 1px solid var(--border-line-color);
+}
+
+.todo-details-btom-toolbar {
+    background-color: var(--toolbar-header-color);
+    border-top: 1px solid var(--border-line-color);
+}

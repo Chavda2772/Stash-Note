@@ -1,0 +1,45 @@
+.todoHeader {
+    background-color: var(--base-color);
+}
+
+.userIcon {
+    background-image: url("/resources/image/User.svg");
+    width: 40px;
+    height: 40px;
+}
+
+.primary-btn {
+    background-color: var(--base-color);
+    color: white;
+}
+
+.settings-bbar {
+    border-top: 1px solid var(--border-line-color);
+}
+
+.export-header,
+.import-header,
+.sec-header {
+    color: black;
+    background-color: var(--toolbar-header-color);
+}
+
+.export-header .x-body-el,
+.import-header .x-body-el,
+.sec-header .x-body-el {
+    color: black;
+}
+
+.export-header-body,
+.import-header-body {
+    border-bottom: 1px solid var(--border-line-color);
+    border-right: 1px solid var(--border-line-color);
+}
+
+.sec-header-body {
+    border: 1px solid var(--border-line-color);
+}
+
+.export-panel-body .x-body-wrap-el.x-panel-body-wrap-el {
+    border-right: 1px solid var(--border-line-color);
+}

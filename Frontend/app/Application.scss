@@ -1,0 +1,18 @@
+/*
+ *  This file can be used to set variables and supply global styling.  View specific 
+ *  styling should be located the view's corresponding scss file.
+ */
+$enable-font-awesome: dynamic(true);
+//$base-color: #5D82FF;
+$base-color: #2648b9;
+$toolbar-header-color: #e8edff;
+$checkboxfield-checked-checkbox-color: $base-color;
+
+:root {
+    --border-line-color: #2648b9;
+    --toolbar-header-color: #e8edff;
+}
+
+.x-panelheader.x-messageboxheader- {
+    background-color: var(--toolbar-header-color);
+}
