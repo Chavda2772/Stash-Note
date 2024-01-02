@@ -1,7 +1,7 @@
 var pool = require('../config/mySql.js');
 
 module.exports.generateNewSyncID = async (data) => {
-  let { uniqueSyncId, hashPassword } = data;
+  let { uniqueSyncId, hashPassword, clientIp } = data;
   return new Promise(function (resolve, reject) {
     pool.getConnection(function (err, conn) {
       if (err) {
@@ -10,8 +10,8 @@ module.exports.generateNewSyncID = async (data) => {
       }
 
       conn.query(
-        `call usp_InsertUserInfo (?, ?)`,
-        [uniqueSyncId, hashPassword],
+        `call usp_InsertUserInfo (?, ?, ?)`,
+        [uniqueSyncId, hashPassword, clientIp],
         function (error, results, fields) {
           conn.release();
           if (error) {
@@ -33,7 +33,7 @@ module.exports.getUserDetail = async (uniqueSyncId) => {
       }
 
       conn.query(
-        `SELECT UserId, Password FROM UserInfo where UUID = ?;`,
+        `call usp_getUserDetailByUUID(?);`,
         [uniqueSyncId],
         function (error, results, fields) {
           conn.release();
@@ -104,6 +104,29 @@ module.exports.getUserNoteDetailsById = async (UserId) => {
       conn.query(
         `call usp_getNoteDetailByUserId(?)`,
         [UserId],
+        function (error, results, fields) {
+          conn.release();
+          if (error) {
+            reject(error);
+          }
+          resolve(results);
+        }
+      );
+    });
+  });
+};
+
+module.exports.addUserIp = async (UserId, clientIp) => {
+  return new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, conn) {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      conn.query(
+        `call usp_addUserIp(?, ?)`,
+        [UserId, clientIp],
         function (error, results, fields) {
           conn.release();
           if (error) {
