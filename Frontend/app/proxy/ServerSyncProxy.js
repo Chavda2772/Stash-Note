@@ -51,4 +51,15 @@ Ext.define('myApp.proxy.ServerSyncProxy', {
             error: error
         });
     },
+    validateUser: function (uniqueSyncId, success, error) {
+        return Common.request.call({
+            url: ApiMethods.validate,
+            method: 'POST',
+            params: {
+                uniqueSyncId,
+            },
+            success: success,
+            error: error
+        });
+    },
 });

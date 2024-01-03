@@ -166,4 +166,34 @@ router.post('/restoreSyncData', async (req, res, next) => {
   }
 });
 
+// Restore request data
+router.post('/validate', async (req, res, next) => {
+  try {
+    const { uniqueSyncId } = req.body;
+    var clientIp = req.ip;
+
+    // Validating Data
+    if (!uniqueSyncId) throw new Error('Invalid Data');
+
+    // Verify user identity
+    const userDetail = await getUserDetail(uniqueSyncId);
+    const allowIps = userDetail[1].map((row) => row.IpAddress);
+
+    if (!allowIps.includes(clientIp)) {
+      res.send({
+        success: true,
+        details: false,
+      });
+      return;
+    }
+
+    res.send({
+      success: true,
+      details: true,
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
