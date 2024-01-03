@@ -9,12 +9,11 @@ Ext.define('myApp.common.ApiMethods', {
     syncUserData: '/api/syncUserData',
     clearSyncData: '/api/clearSyncData',
     restoreSyncData: '/api/restoreSyncData',
+    validate: '/api/validate',
 
 },
     function () {
         if (Ext.manifest.mode == 'development')
-            this.baseURL = "http://localhost:3000"
-
-        console.log("Application Mode:", Ext.manifest.mode)
+            this.baseURL = "http://localhost:3000";        
     }
 );

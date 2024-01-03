@@ -136,30 +136,19 @@ Ext.define("myApp.view.desktop.settings.SettingsController", {
         var me = this;
         var view = me.getView();
 
-        var winSync = Ext.create({
-            xtype: 'syncdata',
-            title: 'Create SyncID',
-            listeners: {
-                onFormSubmit: function (password) {
-                    winSync.setMasked('Loading ...');
-                    Proxy.serverSyncProxy.generateSyncData(password,
-                        function (resData) {
-                            winSync.setMasked(false);
-                            // storing unquiID to local store
-                            localStorage.setItem(Enums.localStorageKeys.userSyncID, JSON.stringify({ value: resData.uniqueSyncId }));
-                            view.lookupReference('rfTxtBackSyncId').setValue(resData.uniqueSyncId);
-                            Ext.Msg.alert('Information', "SyncID created successfully.");
-                            winSync.close();
-                        },
-                        function (error) {
-                            Ext.Msg.alert('Error', error.message);
-                            winSync.setMasked(false);
-                            winSync.close();
-                        }
-                    );
+        me.requestForPassword('Create SyncID', function (password) {
+            Proxy.serverSyncProxy.generateSyncData(password,
+                function (resData) {
+                    // storing unquiID to local store
+                    localStorage.setItem(Enums.localStorageKeys.userSyncID, JSON.stringify({ value: resData.uniqueSyncId }));
+                    view.lookupReference('rfTxtBackSyncId').setValue(resData.uniqueSyncId);
+                    Ext.Msg.alert('Information', "SyncID created successfully.");
+                },
+                function (error) {
+                    Ext.Msg.alert('Error', error.message);
                 }
-            }
-        }).show();
+            );
+        });
     },
     onCopySyncID() {
         var view = this.getView();
@@ -178,31 +167,16 @@ Ext.define("myApp.view.desktop.settings.SettingsController", {
     onSyncUserData() {
         var me = this;
 
-        var winSync = Ext.create({
-            xtype: 'syncdata',
-            title: 'Sync user data',
-            listeners: {
-                onFormSubmit: function (password) {
-                    var appLocalData = me.getLocalStorageData();
-                    if (!appLocalData) return true;
-
-                    Proxy.serverSyncProxy.syncUserData(
-                        commonFunction.readLocalData(Enums.localStorageKeys.userSyncID, true).value,
-                        password,
-                        appLocalData,
-                        function (data) {
-                            Ext.Msg.alert('Information', data);
-                            winSync.close();
-                        },
-                        function (error) {
-                            Ext.Msg.alert('Error', error.message, (choice) => {
-                                winSync.fireEvent('focusPassField', { errorMessage: 'Wrong password !!!' })
-                            });
-                        }
-                    );
-                }
+        me.validateUser('', function (valid) {
+            if (valid) {
+                me.sendSyncRequest('');
             }
-        }).show();
+            else {
+                me.requestForPassword('Sync user data', function (password) {
+                    me.sendSyncRequest(password);
+                });
+            }
+        });
     },
     onClearSyncData: function () {
         var me = this;
@@ -247,35 +221,16 @@ Ext.define("myApp.view.desktop.settings.SettingsController", {
         };
 
         // Restore Data
-        var winSync = Ext.create({
-            xtype: 'syncdata',
-            title: 'Sync user data',
-            listeners: {
-                onFormSubmit: function (password) {
-                    Proxy.serverSyncProxy.restoreSyncData(
-                        txtSyncID.getValue(),
-                        password,
-                        function (data) {
-                            var userData = JSON.parse(atob(data));
-                            if (userData.length) {
-                                userData.forEach(function (keyItem) {
-                                    commonFunction.writeLocalData(keyItem.keyData, keyItem.valueData)
-                                });
-                                Ext.Msg.alert('Information', 'Application data imported successfull. <br >Reloading Application.', function (choice) {
-                                    me.reloadApplication();
-                                });
-                            }
-                            winSync.close();
-                        },
-                        function (error) {
-                            Ext.Msg.alert('Error', error.message, (choice) => {
-                                winSync.fireEvent('focusPassField', { errorMessage: 'Wrong password !!!' })
-                            });
-                        }
-                    );
-                }
+        me.validateUser(txtSyncID.getValue(), function (valid) {
+            if (valid) {
+                me.sendRestoreRequest(txtSyncID.getValue(), '');
             }
-        }).show();
+            else {
+                me.requestForPassword('Restore user data', function (password) {
+                    me.sendRestoreRequest(txtSyncID.getValue(), password);
+                });
+            }
+        });
     },
 
     // Helper function
@@ -304,5 +259,72 @@ Ext.define("myApp.view.desktop.settings.SettingsController", {
             Ext.Msg.alert('Error', e.message);
             return null;
         }
+    },
+    requestForPassword: function (title, callback) {
+
+        var winSync = Ext.create({
+            xtype: 'syncdata',
+            title: title,
+            listeners: {
+                onFormSubmit: function (password) {
+                    callback(password);
+                    winSync.close();
+                }
+            }
+        }).show();
+    },
+    validateUser: function (uniqueSyncId, callback) {
+        if (!uniqueSyncId)
+            uniqueSyncId = commonFunction.readLocalData(Enums.localStorageKeys.userSyncID, true).value;
+        debugger;
+        Proxy.serverSyncProxy.validateUser(
+            uniqueSyncId,
+            function (resData) {
+                callback(resData)
+            },
+            function (error) {
+                callback(false);
+            }
+        );
+    },
+    sendSyncRequest: function (password) {
+        var me = this;
+        var appLocalData = me.getLocalStorageData();
+        if (!appLocalData) return true;
+
+        Proxy.serverSyncProxy.syncUserData(
+            commonFunction.readLocalData(Enums.localStorageKeys.userSyncID, true).value,
+            password,
+            appLocalData,
+            function (data) {
+                Ext.Msg.alert('Information', data);
+            },
+            function (error) {
+                Ext.Msg.alert('Error', error.message);
+            }
+        );
+    },
+    sendRestoreRequest: function (uniqueSyncID, password) {
+        var me = this;
+
+        Proxy.serverSyncProxy.restoreSyncData(
+            uniqueSyncID,
+            password,
+            function (data) {
+                var userData = JSON.parse(atob(data));
+                if (userData.length) {
+                    userData.forEach(function (keyItem) {
+                        commonFunction.writeLocalData(keyItem.keyData, keyItem.valueData)
+                    });
+                    Ext.Msg.alert('Information', 'Application data imported successfull. <br >Reloading Application.', function (choice) {
+                        me.reloadApplication();
+                    });
+                }
+            },
+            function (error) {
+                Ext.Msg.alert('Error', error.message);
+            }
+        );
     }
+
 });
