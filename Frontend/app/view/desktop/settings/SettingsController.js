@@ -276,7 +276,7 @@ Ext.define("myApp.view.desktop.settings.SettingsController", {
     validateUser: function (uniqueSyncId, callback) {
         if (!uniqueSyncId)
             uniqueSyncId = commonFunction.readLocalData(Enums.localStorageKeys.userSyncID, true).value;
-        debugger;
+        
         Proxy.serverSyncProxy.validateUser(
             uniqueSyncId,
             function (resData) {
