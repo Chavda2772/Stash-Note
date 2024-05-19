@@ -47,7 +47,7 @@ DELIMITER ;
 -- Get log download pass key
 DELIMITER $$
 CREATE PROCEDURE `usp_getZipPassKey` ()   BEGIN
-	SELECT ConfigValue FROM stashnote.masterconfiguration where ConfigKey = 'ZipPassKey';
+	SELECT ConfigValue FROM masterconfiguration where ConfigKey = 'ZipPassKey';
 END$$
 DELIMITER ;
 
