@@ -138,3 +138,26 @@ module.exports.addUserIp = async (UserId, clientIp) => {
     });
   });
 };
+
+
+module.exports.getDownloadLogPassCode = async (UserId, userData) => {
+  return new Promise(function (resolve, reject) {
+    pool.getConnection(function (err, conn) {
+      if (err) {
+        reject(err);
+        return;
+      }
+
+      conn.query(
+        `call usp_getZipPassKey()`,
+        function (error, results, fields) {
+          conn.release();
+          if (error) {
+            reject(error);
+          }
+          resolve(results[0][0].ConfigValue);
+        }
+      );
+    });
+  });
+};

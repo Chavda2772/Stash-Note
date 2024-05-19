@@ -5,8 +5,7 @@
 -- Database: `StashNote`
 -- Note: Change Database name as need 
 -- 
-CREATE DATABASE IF NOT EXISTS StashNote;
-USE `StashNote`;
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -45,6 +44,13 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- Get log download pass key
+DELIMITER $$
+CREATE PROCEDURE `usp_getZipPassKey` ()   BEGIN
+	SELECT ConfigValue FROM stashnote.masterconfiguration where ConfigKey = 'ZipPassKey';
+END$$
+DELIMITER ;
+
 DELIMITER $$
 CREATE PROCEDURE `usp_InsertOrUpdateNotes`(IN _UserId int, IN _Note longtext)
 BEGIN
@@ -71,6 +77,25 @@ BEGIN
 END$$
 DELIMITER ;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `masterconfiguration`
+--
+
+CREATE TABLE `masterconfiguration` (
+  `ConfigId` int(11) NOT NULL,
+  `ConfigKey` varchar(200) NOT NULL,
+  `ConfigValue` varchar(500) NOT NULL,
+  `ConfigDescription` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `masterconfiguration`
+--
+
+INSERT INTO `masterconfiguration` (`ConfigId`, `ConfigKey`, `ConfigValue`, `ConfigDescription`) VALUES
+(1, 'ZipPassKey', 'Secret@123@', 'This configuration is used for dowloading logs');
 
 -- --------------------------------------------------------
 
@@ -105,7 +130,13 @@ CREATE TABLE `UserInfo` (
 --
 
 --
--- Indexes for table `Notes`
+-- Indexes for table `masterconfiguration`
+--
+ALTER TABLE `masterconfiguration`
+  ADD PRIMARY KEY (`ConfigId`);
+
+--
+-- Indexes for table `notes`
 --
 ALTER TABLE `Notes`
   ADD PRIMARY KEY (`NoteId`),
@@ -123,7 +154,13 @@ ALTER TABLE `UserInfo`
 --
 
 --
--- AUTO_INCREMENT for table `Notes`
+-- AUTO_INCREMENT for table `masterconfiguration`
+--
+ALTER TABLE `masterconfiguration`
+  MODIFY `ConfigId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `notes`
 --
 ALTER TABLE `Notes`
   MODIFY `NoteId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;

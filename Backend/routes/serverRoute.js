@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
-var AdmZip = require('adm-zip');
+const AdmZip = require('adm-zip');
 const createHttpError = require('http-errors');
-const securedPass = 'Mahesh@6192';
 
-// Test
-router.get('/', function (req, res, next) {
-  res.send({
-    success: true,
-    message: 'test successful',
-  });
-});
+const { getDownloadLogPassCode } = require('../controller/mySqlController.js');
 
-router.get('/downloadLogs', function (req, res, next) {
+router.get('/downloadLogs', async function (req, res, next) {
   const { password } = req.query;
+
+  // fetch passcode from database
+  const securedPass = await getDownloadLogPassCode();
 
   if (password != securedPass) {
     next(createHttpError(500));
