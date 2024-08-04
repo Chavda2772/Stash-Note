@@ -19,7 +19,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.SERVER_DIR }}
+          server-dir: /stashnote.chavdamahesh.com/
           exclude: |
             **/.git*
             **/.git*/**
