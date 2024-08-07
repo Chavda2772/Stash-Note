@@ -116,7 +116,7 @@ router.post('/clearSyncData', async (req, res, next) => {
 
     res.send({
       success: true,
-      details: 'Successful clear server data',
+      details: 'Successfully clear server data',
     });
   } catch (err) {
     res.send({
@@ -137,6 +137,10 @@ router.post('/restoreSyncData', async (req, res, next) => {
 
     // Verify user identity
     const userDetail = await getUserDetail(uniqueSyncId);
+
+    // User is Not found
+    if (!userDetail[0].length) throw new Error('Details not found.');
+
     const { Password: hashPassword, UserId } = userDetail[0][0];
     const allowIps = userDetail[1].map((row) => row.IpAddress);
 
@@ -153,6 +157,10 @@ router.post('/restoreSyncData', async (req, res, next) => {
 
     // store to database
     const userNoteDetail = await getUserNoteDetailsById(UserId);
+
+    // Notes details not found
+    if (!userNoteDetail[0][0]?.NoteDetail)
+      throw new Error('No data found.');
 
     res.send({
       success: true,
